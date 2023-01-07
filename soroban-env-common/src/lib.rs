@@ -36,6 +36,7 @@ pub const VERSION: Version = Version {
 
 mod val_wrapper;
 
+mod arbitrary;
 mod array;
 mod bitset;
 mod compare;

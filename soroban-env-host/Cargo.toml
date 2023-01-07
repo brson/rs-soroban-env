@@ -48,6 +48,7 @@ vm = ["wasmi", "soroban-env-common/vm"]
 hostfn_log_fmt_values = []
 serde = ["soroban-env-common/serde"]
 testutils = ["soroban-env-common/testutils"]
+arbitrary = ["soroban-env-common/arbitrary"]
 
 [target.'cfg(target_os = "linux")'.dev-dependencies]
 perf-event = "0.4.7"

@@ -5,7 +5,7 @@ use stellar_xdr::ScStatic;
 /// Wrapper for a [RawVal] that is tagged with [Tag::Static], interpreting the
 /// [RawVal]'s body as a 32-bit value from a reserved set of "static" values
 /// corresponding to the enumerated cases of [ScStatic].
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Static(RawVal);
 
 impl_wrapper_common!(Static);

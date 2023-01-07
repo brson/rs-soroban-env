@@ -51,6 +51,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "216261ddc8289130e551ddcd5ce8a064710c0d064a4d2895c67151c92b5443f6"
 
 [[package]]
+name = "arbitrary"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29d47fbf90d5149a107494b15a7dc8d69b351be2db3bb9691740e88ec17fd880"
+dependencies = [
+ "derive_arbitrary",
+]
+
+[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -327,6 +336,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7618812407e9402654622dd402b0a89dff9ba93badd6540781526117b92aab7e"
 dependencies = [
  "darling_core",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "derive_arbitrary"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8a16495aeb28047bb1185fca837baf755e7d71ed3aeed7f8504654ffa927208"
+dependencies = [
+ "proc-macro2",
  "quote",
  "syn",
 ]
@@ -1016,6 +1036,7 @@ checksum = "f0ea32af43239f0d353a7dd75a22d94c329c8cdaafdcb4c1c1335aa10c298a4a"
 name = "soroban-env-common"
 version = "0.0.13"
 dependencies = [
+ "arbitrary",
  "crate-git-revision",
  "serde",
  "soroban-env-macros",
@@ -1143,6 +1164,7 @@ name = "stellar-xdr"
 version = "0.0.13"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=bd9deaf09fe86bd287d21527651b240e90c320b5#bd9deaf09fe86bd287d21527651b240e90c320b5"
 dependencies = [
+ "arbitrary",
  "base64",
  "crate-git-revision",
  "hex",
