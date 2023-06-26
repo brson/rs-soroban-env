@@ -22,3 +22,5 @@ mod lifecycle;
 mod prng;
 mod token;
 mod tuple;
+
+mod stack_overflow;
