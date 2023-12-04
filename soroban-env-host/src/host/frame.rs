@@ -57,7 +57,7 @@ pub(crate) struct TestContractFrame {
     pub(crate) id: Hash,
     pub(crate) func: Symbol,
     pub(crate) args: Vec<Val>,
-    pub(crate) panic: Rc<RefCell<Option<Error>>>,
+    pub(crate) panic: Rc<RefCell<Option<HostError>>>,
     pub(crate) instance: ScContractInstance,
 }
 
@@ -68,7 +68,8 @@ impl std::hash::Hash for TestContractFrame {
         self.func.hash(state);
         self.args.hash(state);
         if let Some(panic) = self.panic.borrow().as_ref() {
-            panic.hash(state);
+            // xxx fixme not hashing the full state
+            panic.error.hash(state);
         }
         self.instance.hash(state);
     }
@@ -780,14 +781,14 @@ impl Host {
                             // trap-unreachable code). It's a little weird
                             // because we're not actually running a VM, but we
                             // prioritize emulation fidelity over honesty here.
-                            let mut error: Error =
-                                Error::from(wasmi::core::TrapCode::UnreachableCodeReached);
+                            let mut error: HostError =
+                                HostError::from(Error::from(wasmi::core::TrapCode::UnreachableCodeReached));
 
                             let mut recovered_error_from_panic_refcell = false;
                             if let Ok(panic) = panic.try_borrow() {
-                                if let Some(err) = *panic {
+                                if let Some(ref err) = *panic {
                                     recovered_error_from_panic_refcell = true;
-                                    error = err;
+                                    error = err.clone();
                                 }
                             }
 
@@ -818,7 +819,7 @@ impl Host {
                                     Ok(())
                                 })
                             }
-                            Err(self.error(error, "caught error from function", &[]))
+                            Err(self.host_error(error, "caught error from function", &[]))
                         }
                     }
                 });

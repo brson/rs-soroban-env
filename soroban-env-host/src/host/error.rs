@@ -238,7 +238,14 @@ impl Host {
     /// enriches the returned [Error] with [DebugInfo] in the form of a
     /// [Backtrace] and snapshot of the [Events] buffer.
     pub fn error(&self, error: Error, msg: &str, args: &[Val]) -> HostError {
-        let mut he = HostError::from(error);
+        let he = HostError::from(error);
+        self.host_error(he, msg, args)
+    }
+
+    /// The same as [Host::error] but it will preserve the original
+    /// backtrace from `error` instead of generating a new one.
+    pub fn host_error(&self, error: HostError, msg: &str, args: &[Val]) -> HostError {
+        let mut he = error;
         self.with_debug_mode(|| {
             // We _try_ to take a mutable borrow of the events buffer refcell
             // while building up the event we're going to emit into the events
@@ -248,11 +255,19 @@ impl Host {
             // get an error _while performing_ any of the steps needed to record
             // an error as an event, below.
             if let Ok(mut events_refmut) = self.0.events.try_borrow_mut() {
-                self.record_err_diagnostics(events_refmut.deref_mut(), error, msg, args);
+                self.record_err_diagnostics(events_refmut.deref_mut(), he.error, msg, args);
+            }
+            let mut info = self.maybe_get_debug_info();
+            #[cfg(any(test, feature = "testutils"))]
+            match (&he.info, &mut info) {
+                (Some(heinfo), Some(ref mut info)) => {
+                    info.backtrace = heinfo.backtrace.clone();
+                }
+                _ => { }
             }
             he = HostError {
-                error,
-                info: self.maybe_get_debug_info(),
+                error: he.error,
+                info,
             };
             Ok(())
         });
