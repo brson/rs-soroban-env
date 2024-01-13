@@ -245,6 +245,9 @@ impl Host {
     /// enriches the returned [Error] with [DebugInfo] in the form of a
     /// [Backtrace] and snapshot of the [Events] buffer.
     pub(crate) fn error(&self, error: Error, msg: &str, args: &[Val]) -> HostError {
+        eprintln!("error {error:#?}");
+        let bt = std::backtrace::Backtrace::force_capture();
+        eprintln!("xxxx {bt}");
         let mut he = HostError::from(error);
         self.with_debug_mode(|| {
             // We _try_ to take a mutable borrow of the events buffer refcell
