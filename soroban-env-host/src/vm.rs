@@ -215,7 +215,7 @@ impl Vm {
         let engine = Engine::new(&config);
         let module = {
             let _span0 = tracy_span!("parse module");
-            host.map_err(Module::new(&engine, module_wasm_code))?
+            host.map_err(Module::new_for_fuzz(&engine, module_wasm_code))?
         };
 
         Self::check_max_args(host, &module)?;
